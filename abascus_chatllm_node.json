@@ -1,0 +1,929 @@
+{
+  "node": "n8n-nodes-base.abascusChatLLM",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": [
+    "AI",
+    "Communication"
+  ],
+  "resources": {
+    "credentialDocumentation": [
+      {
+        "url": "https://docs.abascusai.com/api-reference"
+      }
+    ],
+    "primaryDocumentation": [
+      {
+        "url": "https://docs.abascusai.com/integration/n8n"
+      }
+    ]
+  },
+  "alias": [
+    "GPT",
+    "LLM",
+    "OpenAI",
+    "ChatGPT",
+    "AI",
+    "Abascus",
+    "Luxoranova"
+  ],
+  "subcategories": {
+    "AI": [
+      "Language Models"
+    ]
+  },
+  "displayName": "Abascus ChatLLM",
+  "name": "abascusChatLLM",
+  "icon": "file:abascus.svg",
+  "version": 1,
+  "description": "Interact with Large Language Models through Abascus AI for the Luxoranova Executive AI Subbrain",
+  "defaults": {
+    "name": "Abascus ChatLLM"
+  },
+  "inputs": ["main"],
+  "outputs": ["main"],
+  "credentials": [
+    {
+      "name": "abascusApi",
+      "required": true,
+      "displayOptions": {
+        "show": {
+          "authentication": [
+            "apiKey"
+          ]
+        }
+      }
+    },
+    {
+      "name": "openAiApi",
+      "required": true,
+      "displayOptions": {
+        "show": {
+          "authentication": [
+            "openAiKey"
+          ]
+        }
+      }
+    }
+  ],
+  "properties": [
+    {
+      "displayName": "Authentication",
+      "name": "authentication",
+      "type": "options",
+      "options": [
+        {
+          "name": "Abascus API Key",
+          "value": "apiKey"
+        },
+        {
+          "name": "OpenAI API Key",
+          "value": "openAiKey"
+        }
+      ],
+      "default": "apiKey",
+      "description": "The authentication method to use"
+    },
+    {
+      "displayName": "Operation",
+      "name": "operation",
+      "type": "options",
+      "noDataExpression": true,
+      "options": [
+        {
+          "name": "Chat Completion",
+          "value": "chat"
+        },
+        {
+          "name": "Text Completion",
+          "value": "completion"
+        }
+      ],
+      "default": "chat",
+      "description": "The operation to perform"
+    },
+    {
+      "displayName": "Model",
+      "name": "model",
+      "type": "options",
+      "options": [
+        {
+          "name": "GPT-4o",
+          "value": "gpt-4o"
+        },
+        {
+          "name": "GPT-4 Turbo",
+          "value": "gpt-4-turbo"
+        },
+        {
+          "name": "GPT-4",
+          "value": "gpt-4"
+        },
+        {
+          "name": "GPT-3.5 Turbo",
+          "value": "gpt-3.5-turbo"
+        },
+        {
+          "name": "Claude 3 Opus",
+          "value": "claude-3-opus"
+        },
+        {
+          "name": "Claude 3 Sonnet",
+          "value": "claude-3-sonnet"
+        },
+        {
+          "name": "Custom Model",
+          "value": "custom"
+        }
+      ],
+      "default": "gpt-4o",
+      "description": "The model to use for the request"
+    },
+    {
+      "displayName": "Custom Model Name",
+      "name": "customModel",
+      "type": "string",
+      "default": "",
+      "description": "Enter a custom model name",
+      "displayOptions": {
+        "show": {
+          "model": [
+            "custom"
+          ]
+        }
+      }
+    },
+    {
+      "displayName": "Task Type",
+      "name": "taskType",
+      "type": "options",
+      "options": [
+        {
+          "name": "Sales",
+          "value": "sales"
+        },
+        {
+          "name": "Outreach",
+          "value": "outreach"
+        },
+        {
+          "name": "Content Creation",
+          "value": "content"
+        },
+        {
+          "name": "Investor Relations",
+          "value": "investor"
+        },
+        {
+          "name": "General",
+          "value": "general"
+        }
+      ],
+      "default": "general",
+      "description": "The type of task for the 60-second neural loop"
+    },
+    {
+      "displayName": "System Message",
+      "name": "systemMessage",
+      "type": "string",
+      "typeOptions": {
+        "rows": 4
+      },
+      "default": "You are an AI assistant for Luxoranova, helping with business tasks.",
+      "description": "The system message that defines the AI assistant's behavior",
+      "displayOptions": {
+        "show": {
+          "operation": [
+            "chat"
+          ]
+        }
+      }
+    },
+    {
+      "displayName": "Use Dynamic System Message",
+      "name": "useDynamicSystemMessage",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to use a task-specific system message based on the task type",
+      "displayOptions": {
+        "show": {
+          "operation": [
+            "chat"
+          ]
+        }
+      }
+    },
+    {
+      "displayName": "Messages",
+      "name": "messages",
+      "placeholder": "Add Message",
+      "type": "fixedCollection",
+      "typeOptions": {
+        "multipleValues": true,
+        "sortable": true
+      },
+      "default": {
+        "values": [
+          {
+            "role": "user",
+            "content": "={{ $json.input }}"
+          }
+        ]
+      },
+      "options": [
+        {
+          "name": "values",
+          "displayName": "Messages",
+          "values": [
+            {
+              "displayName": "Role",
+              "name": "role",
+              "type": "options",
+              "options": [
+                {
+                  "name": "System",
+                  "value": "system"
+                },
+                {
+                  "name": "User",
+                  "value": "user"
+                },
+                {
+                  "name": "Assistant",
+                  "value": "assistant"
+                },
+                {
+                  "name": "Function",
+                  "value": "function"
+                }
+              ],
+              "default": "user",
+              "description": "The role of the message sender"
+            },
+            {
+              "displayName": "Content",
+              "name": "content",
+              "type": "string",
+              "typeOptions": {
+                "rows": 4
+              },
+              "default": "",
+              "description": "The content of the message"
+            }
+          ]
+        }
+      ],
+      "description": "The messages to send to the model",
+      "displayOptions": {
+        "show": {
+          "operation": [
+            "chat"
+          ]
+        }
+      }
+    },
+    {
+      "displayName": "Prompt",
+      "name": "prompt",
+      "type": "string",
+      "typeOptions": {
+        "rows": 4
+      },
+      "default": "={{ $json.input }}",
+      "description": "The prompt to send to the model",
+      "displayOptions": {
+        "show": {
+          "operation": [
+            "completion"
+          ]
+        }
+      }
+    },
+    {
+      "displayName": "Include Previous Context",
+      "name": "includePreviousContext",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to include context from previous interactions in the 60-second neural loop"
+    },
+    {
+      "displayName": "Context Key",
+      "name": "contextKey",
+      "type": "string",
+      "default": "loopContext",
+      "description": "The key to use for storing and retrieving context from previous interactions",
+      "displayOptions": {
+        "show": {
+          "includePreviousContext": [
+            true
+          ]
+        }
+      }
+    },
+    {
+      "displayName": "Options",
+      "name": "options",
+      "type": "collection",
+      "placeholder": "Add Option",
+      "default": {},
+      "options": [
+        {
+          "displayName": "Temperature",
+          "name": "temperature",
+          "type": "number",
+          "typeOptions": {
+            "minValue": 0,
+            "maxValue": 2
+          },
+          "default": 0.7,
+          "description": "Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive."
+        },
+        {
+          "displayName": "Max Tokens",
+          "name": "max_tokens",
+          "type": "number",
+          "default": 1024,
+          "description": "The maximum number of tokens to generate in the completion."
+        },
+        {
+          "displayName": "Top P",
+          "name": "top_p",
+          "type": "number",
+          "typeOptions": {
+            "minValue": 0,
+            "maxValue": 1
+          },
+          "default": 1,
+          "description": "Controls diversity via nucleus sampling: 0.5 means half of all likelihood-weighted options are considered."
+        },
+        {
+          "displayName": "Frequency Penalty",
+          "name": "frequency_penalty",
+          "type": "number",
+          "typeOptions": {
+            "minValue": -2,
+            "maxValue": 2
+          },
+          "default": 0,
+          "description": "How much to penalize new tokens based on their existing frequency in the text so far. Decreases the model's likelihood to repeat the same line verbatim."
+        },
+        {
+          "displayName": "Presence Penalty",
+          "name": "presence_penalty",
+          "type": "number",
+          "typeOptions": {
+            "minValue": -2,
+            "maxValue": 2
+          },
+          "default": 0,
+          "description": "How much to penalize new tokens based on whether they appear in the text so far. Increases the model's likelihood to talk about new topics."
+        },
+        {
+          "displayName": "Response Format",
+          "name": "response_format",
+          "type": "options",
+          "options": [
+            {
+              "name": "Text",
+              "value": "text"
+            },
+            {
+              "name": "JSON",
+              "value": "json_object"
+            }
+          ],
+          "default": "text",
+          "description": "The format in which the model should return its response"
+        },
+        {
+          "displayName": "JSON Schema",
+          "name": "json_schema",
+          "type": "json",
+          "default": "{}",
+          "description": "The JSON schema that the model should follow when generating JSON",
+          "displayOptions": {
+            "show": {
+              "response_format": [
+                "json_object"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "credentials": [
+    {
+      "name": "abascusApi",
+      "required": true,
+      "displayOptions": {
+        "show": {
+          "authentication": [
+            "apiKey"
+          ]
+        }
+      }
+    },
+    {
+      "name": "openAiApi",
+      "required": true,
+      "displayOptions": {
+        "show": {
+          "authentication": [
+            "openAiKey"
+          ]
+        }
+      }
+    }
+  ],
+  "codex": {
+    "categories": [
+      "AI",
+      "Communication"
+    ],
+    "subcategories": {
+      "AI": [
+        "Language Models"
+      ]
+    },
+    "resources": {
+      "primaryDocumentation": [
+        {
+          "url": "https://docs.abascusai.com/integration/n8n"
+        }
+      ],
+      "credentialDocumentation": [
+        {
+          "url": "https://docs.abascusai.com/api-reference"
+        }
+      ]
+    }
+  },
+  "code": {
+    "type": "file",
+    "content": "
+// This code will be executed by n8n when the node is run
+// It handles the API calls to the LLM service and processes the responses
+
+const { NodeApiError } = require('n8n-workflow');
+
+class AbascusChatLLM {
+  constructor() {
+    this.id = 'abascusChatLLM';
+    this.name = 'Abascus ChatLLM';
+    this.description = 'Interact with Large Language Models through Abascus AI for the Luxoranova Executive AI Subbrain';
+    this.version = 1;
+    this.icon = 'file:abascus.svg';
+    this.group = ['transform'];
+    this.documentationUrl = 'https://docs.abascusai.com/integration/n8n';
+    this.defaults = {
+      name: 'Abascus ChatLLM',
+    };
+    this.inputs = ['main'];
+    this.outputs = ['main'];
+  }
+
+  async execute() {
+    const items = this.getInputData();
+    const returnData = [];
+    
+    // Get credentials and parameters
+    const authentication = this.getNodeParameter('authentication', 0);
+    const operation = this.getNodeParameter('operation', 0);
+    const model = this.getNodeParameter('model', 0);
+    const taskType = this.getNodeParameter('taskType', 0);
+    const includePreviousContext = this.getNodeParameter('includePreviousContext', 0);
+    const options = this.getNodeParameter('options', 0, {});
+    
+    // Get the actual model name (handle custom model case)
+    let modelName = model;
+    if (model === 'custom') {
+      modelName = this.getNodeParameter('customModel', 0);
+    }
+    
+    // Set up API credentials based on authentication method
+    let apiKey, apiUrl;
+    if (authentication === 'apiKey') {
+      const credentials = await this.getCredentials('abascusApi');
+      apiKey = credentials.apiKey;
+      apiUrl = credentials.apiUrl || 'https://api.abascusai.com/v1';
+    } else {
+      const credentials = await this.getCredentials('openAiApi');
+      apiKey = credentials.apiKey;
+      apiUrl = 'https://api.openai.com/v1';
+    }
+    
+    // Process each item
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      
+      try {
+        // Handle context from previous interactions if enabled
+        let context = [];
+        if (includePreviousContext) {
+          const contextKey = this.getNodeParameter('contextKey', i, 'loopContext');
+          // Try to get context from workflow data
+          try {
+            context = await this.getWorkflowStaticData('global').getDataKey(contextKey) || [];
+          } catch (error) {
+            // If context doesn't exist yet, initialize it
+            context = [];
+          }
+        }
+        
+        // Prepare request based on operation type
+        let requestData, endpoint;
+        
+        if (operation === 'chat') {
+          endpoint = `${apiUrl}/chat/completions`;
+          
+          // Get system message - either custom or dynamic based on task type
+          let systemMessage;
+          const useDynamicSystemMessage = this.getNodeParameter('useDynamicSystemMessage', i, true);
+          
+          if (useDynamicSystemMessage) {
+            // Set task-specific system messages
+            switch (taskType) {
+              case 'sales':
+                systemMessage = 'You are an AI sales assistant for Luxoranova. Your goal is to identify sales opportunities, qualify leads, and provide persuasive responses that highlight our value proposition. Be concise, professional, and focus on benefits that address specific customer needs.';
+                break;
+              case 'outreach':
+                systemMessage = 'You are an AI outreach specialist for Luxoranova. Your goal is to craft personalized messages that establish meaningful connections with potential partners, clients, and industry influencers. Be authentic, relevant, and focused on building relationships rather than immediate transactions.';
+                break;
+              case 'content':
+                systemMessage = 'You are an AI content creator for Luxoranova. Your goal is to produce engaging, informative, and brand-aligned content across various formats. Maintain a consistent voice, incorporate relevant keywords naturally, and ensure all content delivers value to the target audience.';
+                break;
+              case 'investor':
+                systemMessage = 'You are an AI investor relations specialist for Luxoranova. Your goal is to communicate company performance, strategy, and outlook in a clear, transparent, and compelling manner. Be precise with financial information, balanced in your assessment, and focused on long-term value creation.';
+                break;
+              default:
+                systemMessage = 'You are an AI assistant for Luxoranova, helping with business tasks. Provide helpful, accurate, and concise responses based on the information available to you.';
+            }
+          } else {
+            systemMessage = this.getNodeParameter('systemMessage', i);
+          }
+          
+          // Get messages from parameters
+          const messagesInput = this.getNodeParameter('messages', i, { values: [] }).values;
+          
+          // Prepare messages array with system message first
+          let messages = [
+            {
+              role: 'system',
+              content: systemMessage,
+            },
+          ];
+          
+          // Add context from previous interactions if available
+          if (context.length > 0) {
+            messages = messages.concat(context);
+          }
+          
+          // Add current messages
+          for (const message of messagesInput) {
+            messages.push({
+              role: message.role,
+              content: message.content,
+            });
+          }
+          
+          // Prepare request data
+          requestData = {
+            model: modelName,
+            messages,
+            ...options,
+          };
+          
+        } else if (operation === 'completion') {
+          endpoint = `${apiUrl}/completions`;
+          
+          // Get prompt from parameters
+          const prompt = this.getNodeParameter('prompt', i);
+          
+          // Prepare request data
+          requestData = {
+            model: modelName,
+            prompt,
+            ...options,
+          };
+        }
+        
+        // Make API request
+        const response = await this.helpers.request({
+          method: 'POST',
+          url: endpoint,
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: requestData,
+          json: true,
+        });
+        
+        // Process response based on operation type
+        let result;
+        
+        if (operation === 'chat') {
+          // Extract response content
+          const responseMessage = response.choices[0].message;
+          
+          // Update context if enabled
+          if (includePreviousContext) {
+            const contextKey = this.getNodeParameter('contextKey', i, 'loopContext');
+            
+            // Add the latest user message and AI response to context
+            const latestUserMessage = requestData.messages[requestData.messages.length - 1];
+            const updatedContext = [...context];
+            
+            // Only add the latest user message if it's not already in context
+            if (updatedContext.length === 0 || 
+                updatedContext[updatedContext.length - 1].content !== latestUserMessage.content) {
+              updatedContext.push(latestUserMessage);
+            }
+            
+            // Add AI response to context
+            updatedContext.push(responseMessage);
+            
+            // Limit context to last 10 messages to prevent token limits
+            const contextLimit = 10;
+            const trimmedContext = updatedContext.slice(-contextLimit);
+            
+            // Save updated context to workflow data
+            await this.getWorkflowStaticData('global').setDataKey(contextKey, trimmedContext);
+          }
+          
+          // Prepare result object
+          result = {
+            role: responseMessage.role,
+            content: responseMessage.content,
+            model: response.model,
+            taskType,
+            usage: response.usage,
+            finishReason: response.choices[0].finish_reason,
+          };
+          
+        } else if (operation === 'completion') {
+          // Extract response text
+          const responseText = response.choices[0].text;
+          
+          // Prepare result object
+          result = {
+            text: responseText,
+            model: response.model,
+            taskType,
+            usage: response.usage,
+            finishReason: response.choices[0].finish_reason,
+          };
+        }
+        
+        // Add timestamp for the 60-second neural loop tracking
+        result.timestamp = new Date().toISOString();
+        
+        // Add structured data based on task type
+        switch (taskType) {
+          case 'sales':
+            // Parse the response to extract sales-specific data
+            try {
+              if (options.response_format === 'json_object') {
+                // If JSON response was requested, use it directly
+                result.structuredData = JSON.parse(result.content || result.text);
+              } else {
+                // Try to extract key sales information
+                const content = result.content || result.text;
+                result.structuredData = {
+                  leadQualification: this.extractLeadQualification(content),
+                  nextSteps: this.extractNextSteps(content),
+                  valueProposition: this.extractValueProposition(content),
+                };
+              }
+            } catch (error) {
+              result.structuredData = { error: 'Failed to parse structured data' };
+            }
+            break;
+            
+          case 'outreach':
+            // Add outreach-specific structured data
+            try {
+              if (options.response_format === 'json_object') {
+                result.structuredData = JSON.parse(result.content || result.text);
+              } else {
+                const content = result.content || result.text;
+                result.structuredData = {
+                  personalization: this.extractPersonalization(content),
+                  callToAction: this.extractCallToAction(content),
+                  followUpDate: this.extractFollowUpDate(content),
+                };
+              }
+            } catch (error) {
+              result.structuredData = { error: 'Failed to parse structured data' };
+            }
+            break;
+            
+          case 'content':
+            // Add content-specific structured data
+            try {
+              if (options.response_format === 'json_object') {
+                result.structuredData = JSON.parse(result.content || result.text);
+              } else {
+                const content = result.content || result.text;
+                result.structuredData = {
+                  contentType: this.extractContentType(content),
+                  keywords: this.extractKeywords(content),
+                  targetAudience: this.extractTargetAudience(content),
+                };
+              }
+            } catch (error) {
+              result.structuredData = { error: 'Failed to parse structured data' };
+            }
+            break;
+            
+          case 'investor':
+            // Add investor-specific structured data
+            try {
+              if (options.response_format === 'json_object') {
+                result.structuredData = JSON.parse(result.content || result.text);
+              } else {
+                const content = result.content || result.text;
+                result.structuredData = {
+                  financialMetrics: this.extractFinancialMetrics(content),
+                  risks: this.extractRisks(content),
+                  outlook: this.extractOutlook(content),
+                };
+              }
+            } catch (error) {
+              result.structuredData = { error: 'Failed to parse structured data' };
+            }
+            break;
+            
+          default:
+            // For general tasks, don't add structured data
+            break;
+        }
+        
+        returnData.push({ json: result });
+        
+      } catch (error) {
+        // Handle errors
+        if (error.response && error.response.body) {
+          throw new NodeApiError(this.getNode(), error.response.body);
+        } else {
+          throw error;
+        }
+      }
+    }
+    
+    return [returnData];
+  }
+  
+  // Helper methods for extracting structured data
+  extractLeadQualification(text) {
+    // Simple extraction logic - in a real implementation, this would be more sophisticated
+    if (text.toLowerCase().includes('qualified lead')) return 'Qualified';
+    if (text.toLowerCase().includes('not qualified')) return 'Not Qualified';
+    return 'Needs Assessment';
+  }
+  
+  extractNextSteps(text) {
+    // Extract sentences that contain action items or next steps
+    const sentences = text.split(/[.!?]+/);
+    const nextStepsSentences = sentences.filter(sentence => 
+      sentence.toLowerCase().includes('next step') || 
+      sentence.toLowerCase().includes('follow up') ||
+      sentence.toLowerCase().includes('should') ||
+      sentence.toLowerCase().includes('recommend')
+    );
+    return nextStepsSentences.join('. ').trim() || 'No specific next steps identified';
+  }
+  
+  extractValueProposition(text) {
+    // Extract value proposition from text
+    const sentences = text.split(/[.!?]+/);
+    const valuePropSentences = sentences.filter(sentence => 
+      sentence.toLowerCase().includes('value') || 
+      sentence.toLowerCase().includes('benefit') ||
+      sentence.toLowerCase().includes('advantage') ||
+      sentence.toLowerCase().includes('solution')
+    );
+    return valuePropSentences.join('. ').trim() || 'No specific value proposition identified';
+  }
+  
+  extractPersonalization(text) {
+    // Extract personalized elements from outreach message
+    const firstParagraph = text.split('\\n')[0];
+    return firstParagraph || 'No personalization identified';
+  }
+  
+  extractCallToAction(text) {
+    // Extract call to action from text
+    const sentences = text.split(/[.!?]+/);
+    const ctaSentences = sentences.filter(sentence => 
+      sentence.toLowerCase().includes('call') || 
+      sentence.toLowerCase().includes('email') ||
+      sentence.toLowerCase().includes('contact') ||
+      sentence.toLowerCase().includes('schedule') ||
+      sentence.toLowerCase().includes('meet')
+    );
+    return ctaSentences.join('. ').trim() || 'No specific call to action identified';
+  }
+  
+  extractFollowUpDate(text) {
+    // Extract follow-up date from text
+    const dateRegex = /(\d{1,2}(st|nd|rd|th)? of [A-Za-z]+|[A-Za-z]+ \d{1,2}(st|nd|rd|th)?|next [A-Za-z]+day|in \d+ (day|week)s?)/i;
+    const match = text.match(dateRegex);
+    return match ? match[0] : 'No specific follow-up date identified';
+  }
+  
+  extractContentType(text) {
+    // Determine content type from text
+    if (text.toLowerCase().includes('blog')) return 'Blog Post';
+    if (text.toLowerCase().includes('social media')) return 'Social Media Post';
+    if (text.toLowerCase().includes('email')) return 'Email';
+    if (text.toLowerCase().includes('video')) return 'Video Script';
+    if (text.toLowerCase().includes('whitepaper')) return 'Whitepaper';
+    return 'General Content';
+  }
+  
+  extractKeywords(text) {
+    // Extract potential keywords from text
+    const commonWords = ['the', 'and', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'with', 'by', 'about', 'as', 'of', 'that', 'this'];
+    const words = text.toLowerCase().match(/\b[a-z]{3,}\b/g) || [];
+    const wordCounts = {};
+    
+    words.forEach(word => {
+      if (!commonWords.includes(word)) {
+        wordCounts[word] = (wordCounts[word] || 0) + 1;
+      }
+    });
+    
+    // Get top 5 most frequent words as keywords
+    return Object.entries(wordCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(entry => entry[0]);
+  }
+  
+  extractTargetAudience(text) {
+    // Extract target audience from text
+    const audienceIndicators = ['audience', 'demographic', 'users', 'customers', 'clients', 'readers', 'viewers'];
+    const sentences = text.split(/[.!?]+/);
+    
+    for (const indicator of audienceIndicators) {
+      const relevantSentences = sentences.filter(sentence => 
+        sentence.toLowerCase().includes(indicator)
+      );
+      if (relevantSentences.length > 0) {
+        return relevantSentences.join('. ').trim();
+      }
+    }
+    
+    return 'No specific target audience identified';
+  }
+  
+  extractFinancialMetrics(text) {
+    // Extract financial metrics from text
+    const metricRegex = /(\$\d+(\.\d+)?(k|m|b|M|B)?|\d+(\.\d+)?%|million|billion|thousand)/g;
+    const matches = text.match(metricRegex) || [];
+    return matches.length > 0 ? matches : ['No specific financial metrics identified'];
+  }
+  
+  extractRisks(text) {
+    // Extract risk factors from text
+    const riskIndicators = ['risk', 'challenge', 'obstacle', 'threat', 'concern', 'issue', 'problem'];
+    const sentences = text.split(/[.!?]+/);
+    
+    const riskSentences = [];
+    for (const indicator of riskIndicators) {
+      const relevantSentences = sentences.filter(sentence => 
+        sentence.toLowerCase().includes(indicator)
+      );
+      riskSentences.push(...relevantSentences);
+    }
+    
+    return riskSentences.length > 0 ? 
+      [...new Set(riskSentences)].join('. ').trim() : 
+      'No specific risks identified';
+  }
+  
+  extractOutlook(text) {
+    // Extract future outlook from text
+    const outlookIndicators = ['future', 'outlook', 'forecast', 'projection', 'expect', 'anticipate', 'predict'];
+    const sentences = text.split(/[.!?]+/);
+    
+    const outlookSentences = [];
+    for (const indicator of outlookIndicators) {
+      const relevantSentences = sentences.filter(sentence => 
+        sentence.toLowerCase().includes(indicator)
+      );
+      outlookSentences.push(...relevantSentences);
+    }
+    
+    return outlookSentences.length > 0 ? 
+      [...new Set(outlookSentences)].join('. ').trim() : 
+      'No specific outlook identified';
+  }
+}
+
+module.exports = { nodeType: AbascusChatLLM };
+"
+  }
+}
