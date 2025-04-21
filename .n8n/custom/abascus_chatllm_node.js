@@ -18,8 +18,31 @@ class AbascusChatLLM {
   }
 
   async execute() {
-    console.log('Abascus ChatLLM node is running...');
-    return [[]];
+    const items = this.getInputData();
+    const returnData = [];
+    
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.json.strategy && item.json.market_context) {
+        console.log('Processing strategy:', item.json.strategy);
+        console.log('Market context:', item.json.market_context);
+        
+        returnData.push({
+          json: {
+            status: 'processed',
+            timestamp: new Date().toISOString(),
+            input: item.json,
+            analysis: {
+              strategy: item.json.strategy,
+              market_conditions: item.json.market_context,
+              recommendation: 'Processing market context for high volatility scenarios'
+            }
+          }
+        });
+      }
+    }
+    
+    return returnData;
   }
 }
 

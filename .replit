@@ -8,10 +8,19 @@ channel = "stable-24_05"
 run = ["sh", "-c", ".n8n/custom"]
 
 [workflows]
-runButton = "Run n8n"
+runButton = "Process Strategy"
 
 [[workflows.workflow]]
 name = "Run n8n"
+author = 41766014
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node .n8n/custom/abascus_chatllm_node.js"
+
+[[workflows.workflow]]
+name = "Process Strategy"
 author = 41766014
 mode = "sequential"
 
