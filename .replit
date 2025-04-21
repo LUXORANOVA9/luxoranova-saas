@@ -46,3 +46,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "node .n8n/custom/run_tests.js"
+
+[[workflows.workflow]]
+name = "Run API Server"
+author = 41766014
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node .n8n/custom/server.js"
