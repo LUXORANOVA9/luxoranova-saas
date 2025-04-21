@@ -8,21 +8,14 @@ app.use(express.json());
 
 app.post('/luxora-trigger', async (req, res) => {
   try {
-    const node = new AbascusChatLLM();
-    const testData = [{
-      json: {
-        strategy: req.body.strategy || 'lux_strategy_v2',
-        market_context: req.body.context || 'default context',
-        prediction: req.body.prediction || {}
-      }
-    }];
+    const luxoraNode = require('./luxora_node')();
+    const input = {
+      strategy: req.body.strategy,
+      context: req.body.context,
+      prediction: req.body.prediction
+    };
 
-    const result = await node.execute.call({
-      getInputData: () => testData,
-      getNodeParameter: (param, itemIndex, defaultValue) => defaultValue,
-      getCredentials: () => ({ apiKey: process.env.ABASCUS_API_KEY })
-    });
-
+    const result = luxoraNode.execute(JSON.stringify(input));
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });

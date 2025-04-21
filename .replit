@@ -9,7 +9,7 @@ packages = ["glibcLocales"]
 run = ["sh", "-c", ".n8n/custom"]
 
 [workflows]
-runButton = "Run Dashboard"
+runButton = "Run API Server"
 
 [[workflows.workflow]]
 name = "Run n8n"
