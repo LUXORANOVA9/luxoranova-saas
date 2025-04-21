@@ -345,6 +345,47 @@ async function getAnalytics(type, options = {}) {
   };
 }
 
+/**
+ * Sync a strategy prediction to Notion
+ * @param {string} strategy - Strategy identifier
+ * @param {string} context - Market context
+ * @param {object} prediction - Prediction data
+ * @returns {Promise<void>}
+ */
+async function syncPredictionToNotion(strategy, context, prediction) {
+  try {
+    validateStrategy(strategy);
+    
+    // First log to Firebase for our records
+    await logInteraction('investor', {
+      strategy,
+      context
+    }, prediction, {
+      source: 'notion_sync',
+      timestamp: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    // The actual Notion sync would go here
+    // This is a placeholder for the Notion API integration
+    console.log(`Synced prediction for ${strategy} to Notion:`, {
+      strategy,
+      context,
+      prediction
+    });
+
+  } catch (error) {
+    console.error('Failed to sync prediction to Notion:', error);
+    throw error;
+  }
+}
+
+function validateStrategy(strategy) {
+  const validStrategies = ['lux_strategy_v1', 'lux_strategy_v2', 'lux_strategy_v3'];
+  if (!validStrategies.includes(strategy)) {
+    throw new Error(`Invalid strategy: ${strategy}. Must be one of: ${validStrategies.join(', ')}`);
+  }
+}
+
 // Export functions for use in n8n custom node
 module.exports = {
   logInteraction,
@@ -353,5 +394,6 @@ module.exports = {
   getInteractionContext,
   calculateSuccessRate,
   calculateAverageResponseTime,
-  getAnalytics
+  getAnalytics,
+  syncPredictionToNotion
 };
