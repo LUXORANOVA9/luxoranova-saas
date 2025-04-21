@@ -1,0 +1,20 @@
+modules = ["nodejs-20"]
+run = ".n8n/custom"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", ".n8n/custom"]
+
+[workflows]
+runButton = "Run n8n"
+
+[[workflows.workflow]]
+name = "Run n8n"
+author = 41766014
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node .n8n/custom/abascus_chatllm_node.js"
