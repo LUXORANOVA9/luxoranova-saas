@@ -37,3 +37,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "streamlit run streamlit_roi_dashboard.py --server.address=0.0.0.0 --server.port=5000"
+
+[[workflows.workflow]]
+name = "Test n8n Node"
+author = 41766014
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node .n8n/custom/run_tests.js"
