@@ -3,6 +3,7 @@ run = ".n8n/custom"
 
 [nix]
 channel = "stable-24_05"
+packages = ["glibcLocales"]
 
 [deployment]
 run = ["sh", "-c", ".n8n/custom"]
