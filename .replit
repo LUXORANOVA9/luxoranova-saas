@@ -6,7 +6,7 @@ channel = "stable-24_05"
 packages = ["glibcLocales"]
 
 [deployment]
-run = ["sh", "-c", ".n8n/custom"]
+run = ["sh", "-c", "bash ./final_push.sh"]
 
 [workflows]
 runButton = "Run API Server"
