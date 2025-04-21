@@ -1,6 +1,7 @@
 
 const express = require('express');
 const { AbascusChatLLM } = require('./abascus_chatllm_node');
+const LuxoraNode = require('./luxora_node');
 const app = express();
 
 app.use(express.json());
